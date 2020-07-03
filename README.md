@@ -18,7 +18,21 @@ The gitlab repository for the Mashin Learning Eye Movement
 	
 	* Train:
 	
-	<img align="left" height="94px" width="94px" alt="Server Icon" src="images/train_out.jpg" />
+	<img align="left" height="94px" width="94px" alt="Server Icon" src="images/train_out.png" />
 	
+	<img align="left" height="94px" width="94px" alt="Server Icon" src="images/train2_out.png" />
 	
+	<img align="left" height="94px" width="94px" alt="Server Icon" src="images/train3_out.png" />
+	
+	<img align="left" height="94px" width="94px" alt="Server Icon" src="images/train4_out.png" />
+	
+	* Test:
+	
+	<img align="left" height="94px" width="94px" alt="Server Icon" src="images/test1_out.png" />
+	
+	<img align="left" height="94px" width="94px" alt="Server Icon" src="images/test2_out.png" />
+	
+	<img align="left" height="94px" width="94px" alt="Server Icon" src="images/test3_out.png" />
+	
+	<img align="left" height="94px" width="94px" alt="Server Icon" src="images/test4_out.png" />	
 	
