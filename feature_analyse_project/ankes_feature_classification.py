@@ -4,6 +4,9 @@
 Created on Thu Jan  9 16:26:50 2020
 
 @author: mendel
+
+
+classify the collected 10000 selected feature.  
 """
 import numpy as np
 import pandas as pd
@@ -30,9 +33,6 @@ DEBUG = 0
 from keras.utils import Sequence
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
-
-
-
 
 from modules.dataloader_featureklassification import Data_Loader
 
@@ -93,10 +93,6 @@ loader = Data_Loader(memory_color_path,
 
 
 part_data = pd.read_feather(loader.filtered_train_paths[0])
-
-
-
-
 
 input_shape = loader.get_shapes()
 
@@ -178,10 +174,7 @@ for epoch in range(epochs):
     #normalize
     X_train = preprocessing.normalize(X_train_imp)
    
-      
-#    X_train, y_train = shuffle(X_train_normal, y_train )
-#      
-      
+       
     train_metrics = classifier.train_on_batch(X_train,
                          y_train
                          )
@@ -195,156 +188,77 @@ for epoch in range(epochs):
     
     list_train_mean_loss.append(train_metrics[0])
     
-#    
-#  progbar_test = Progbar(test_step)  
-#    
-#  for i in range(test_step):
-#    
-#    X_test, y_test = next(test_generator)
-#     
-#    print("\nTest shape: ", X_test.shape)
-#  
-#    progbar_test.add(1)
-#      
-#    #impute missing data
-#    X_test_imp =imp.fit_transform(X_test)
-#    
-#    #normalize
-#    X_test_normal = preprocessing.normalize(X_test_imp)
-##    #shuffle
-##    X_test, y_test = shuffle(X_test_normal, y_test )
-#      
-#    test_metrics = classifier.test_on_batch(X_test, y_test)
-#
-#    list_test_mean_acc.append(test_metrics[1])
-#    
-#    list_test_mean_loss.append(test_metrics[0])
     
-#  if max_test_accuracy < np.mean(list_test_mean_acc):
-#    max_test_accuracy = np.mean(list_test_mean_acc)
+  progbar_test = Progbar(test_step)  
     
-#    print("save : ", max_test_accuracy)
-#
-#    classifier.save('models/model_epoch' + str(epoch) + "_test_acc_" + str(max_test_accuracy ) + "_id_ " + str(train_id)  )
-#    
-#    
-#  log_train = "train accuracy: " +  str(np.mean(list_train_mean_acc)) + "\n" + \
-#              "train loss: "     +  str(np.mean(list_train_mean_loss)) + "\n" + \
-#              "test accuracy: " + str(np.mean(list_test_mean_acc)) + "\n" + \
-#              "test loss: " + str(np.mean(list_test_mean_loss)) + "\n"
-#              
-              
-#  classifier.fit(x=X_train, 
-#      y=y_train,
-#      batch_size=256,
-#      epochs=100,
-#      verbose=1,
-#      callbacks=None, 
-#      validation_split=0.1,
-#      validation_data =(X_test, y_test)
-#      )
-#  
-#  
-#               
-#  print(log_train)  
-#  
-#  log.write(log_train)
-#  
-#  history_train_acc.append(np.mean(list_train_mean_acc))
-#  history_test_acc.append(np.mean(list_test_mean_acc))
-#  
-#  history_train_loss.append(np.mean(list_train_mean_loss))
-#  history_test_loss.append(np.mean(list_test_mean_loss))  
-#  
-#log.close()
-#
-#
-#
-#plt.plot(history_train_acc)
-#plt.plot(history_test_acc)
-#plt.plot(history_train_loss)
-#plt.plot(history_test_loss)
-#
-#plt.show()
-
-#  
-#  
-#len(loader.get_filtered_test_paths())
-#  
+  for i in range(test_step):
+    
+    X_test, y_test = next(test_generator)
+    
+    print("\nTest shape: ", X_test.shape)
   
+    progbar_test.add(1)
+      
+    #impute missing data
+    X_test_imp =imp.fit_transform(X_test)
+    
+    #normalize
+    X_test_normal = preprocessing.normalize(X_test_imp)
+#    #shuffle
+#    X_test, y_test = shuffle(X_test_normal, y_test )
+      
+    test_metrics = classifier.test_on_batch(X_test, y_test)
+
+    list_test_mean_acc.append(test_metrics[1])
+    
+    list_test_mean_loss.append(test_metrics[0])
+    
+  if max_test_accuracy < np.mean(list_test_mean_acc):
+    max_test_accuracy = np.mean(list_test_mean_acc)
+    
+    print("save : ", max_test_accuracy)
+
+    classifier.save('models/model_epoch' + str(epoch) + "_test_acc_" + str(max_test_accuracy ) + "_id_ " + str(train_id)  )
     
     
-    
-      
-      
-      
-#      perdict_train = classifier.predict(X_train)
-#      
-#      y_train_shaped = [np.argmax(p) + 1 for p in y_train]
-#      
-#      
-#      prediction_train_shaped = [np.argmax(p) + 1 for p in perdict_train]
-#      
-#      
-#      score_test = classifier.evaluate(X_test, y_test, batch_size=32)
-#      
-#      
-#      perdict_test = classifier.predict(X_test)
-#
-#
-#      y_test_shaped = [np.argmax(p) + 1 for p in y_test]
-#      
-#      
-#      prediction_test_shaped = [np.argmax(p) + 1 for p in perdict_test]
-#      
-#      
-#      prediction_train_shaped[:10]
-#      
-#      
-#      train_score = classifier.evaluate(X_train, y_train, batch_size=64)
-#
-#      X_test, y_test    =   shuffle(X_test, y_test, random_state=0)
-      
-#      
-#  
-#    
-#  test_log  = "Test : " + str(test_mean_acc)+" \n"
-#    
-#  print(test_log)
-##
-##  log.write(test_log)
-#  
-##close writing the metrics in log  
-#log.close()
-#
-##
-##
-###
-#loader_test = Data_Loader(memory_color_path,
-#                     layer_filter,
-#                     filter1,
-#                     filter2,
-#                     batch_size,
-#                     train_test_split_ratio = 0.1
-#                     )
-##
-##
-#gen = loader_test.load_train_dataframe()
-#
-#
-#X_train, y_train = next(gen)
-##
-##
-##X_train.shape
-##
-##y_train.shape
-##
-##
-#
-#
+  log_train = "train accuracy: " +  str(np.mean(list_train_mean_acc)) + "\n" + \
+              "train loss: "     +  str(np.mean(list_train_mean_loss)) + "\n" + \
+              "test accuracy: " + str(np.mean(list_test_mean_acc)) + "\n" + \
+              "test loss: " + str(np.mean(list_test_mean_loss)) + "\n"
+              
+              
+  classifier.fit(x=X_train, 
+      y=y_train,
+      batch_size=256,
+      epochs=100,
+      verbose=1,
+      callbacks=None, 
+      validation_split=0.1,
+      validation_data =(X_test, y_test)
+      )
+  
+  
+              
+  print(log_train)  
+  
+  log.write(log_train)
+  
+  history_train_acc.append(np.mean(list_train_mean_acc))
+  history_test_acc.append(np.mean(list_test_mean_acc))
+  
+  history_train_loss.append(np.mean(list_train_mean_loss))
+  history_test_loss.append(np.mean(list_test_mean_loss))  
+  
+log.close()
 
 
 
-#
+plt.plot(history_train_acc)
+plt.plot(history_test_acc)
+plt.plot(history_train_loss)
+plt.plot(history_test_loss)
+
+plt.show()
+
 
 
