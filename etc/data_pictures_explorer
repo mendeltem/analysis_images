@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jan 24 20:55:58 2019
+
+@author: mendel
+"""
+
+import sys
+import pickle
+import keras as ks
+import tensorflow as tf
+from keras.utils import to_categorical
+from keras import models
+from keras import layers
+import os
+#import exp_library as ex
+import pandas as pd
+import numpy as np
+
+from modules.library import get_img_paths,get_feature_paths
+from modules.library import getsize
+
+from time import time
+from keras.applications.inception_v3 import preprocess_input
+from modules.generators import ImageSequence
+
+
+from os import listdir
+from os.path import isfile, join
+
+#fevea ist 1 Grad
+fovea = 15
+
+DEFAULT_EYE_FIXATION_DAT    = "finalresulttab_funcsac_SFC_memory.dat"
+DEFAULT_IMAGE_DIRECTORY     = 'mem_images/'
+DEFAULT_IMAGE_FEATURES_EYEM_DIRECTORY = "saved/color_high-pass"
+
+
+IMAGE_DIRECTORY = ""
+IMAGE_FEATURES_DIRECTORY = ""
+
+all_data_uncleared = pd.read_table(
+        DEFAULT_EYE_FIXATION_DAT,encoding = "ISO-8859-1")
+
+
+
+data = pd.DataFrame()
+
+
+
+features = [f for f in listdir(DEFAULT_IMAGE_FEATURES_EYEM_DIRECTORY) if isfile(join(DEFAULT_IMAGE_FEATURES_EYEM_DIRECTORY, f))]
+
+
+len(features)
+
+features.sort()
+
+Data = pd.DataFrame()
+
+for i, images in enumerate(features):
+    
+    print(images)
+
+    Loaded_Result = pd.read_pickle(DEFAULT_IMAGE_FEATURES_EYEM_DIRECTORY+"/"+images)
+    Data = Data.append(Loaded_Result.iloc[:,1:15])
+    print("shape ",Data.shape)
+
+
+part = Data.iloc[:,1:15]
+part2 = Data.iloc[:,1:15]
+
+
+sel = Data.loc[
+
+((Data["colorimages"] == 1) )&
+((Data["masktype"] == 0)  ) &
+((Data["maskregion"]  == 0 )  )
+,:] 
+
+
+sel2 = part2.loc[
+
+((part2["colorimages"] == 1) )&
+((part2["masktype"] == 0)  ) &
+((part2["maskregion"]  == 0 )  )
+,:] 
+
+
+sel.shape[0]+ sel2.shape[0]
+#Überprüft wie viele grow die Spalte ist
+#for i in range(50):
+#    Loaded_Result = pd.read_pickle("saved/Output_"+str(i+1)+".h5")
+#    print(i," ",data.shape)
+#    shape = Loaded_Result.shape[0]
+#    summe = summe + shape
+#print(summe)
+#    
+
+
+
+
+#
+#model = keras.Sequential([
+#    ks.layers.Flatten(input_shape=(1, 10048)),
+#    ks.layers.Dense(128, activation=tf.nn.relu),
+#    ks.layers.Dense(10, activation=tf.nn.softmax)
+#])
+

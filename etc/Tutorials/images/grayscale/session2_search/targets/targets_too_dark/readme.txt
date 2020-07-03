@@ -1,0 +1,1 @@
+Diese Target-Cues wurden durch hellere Versionen ersetzt (siehe Ordner "targets"), da sie am Subject-Monitor zu dunkel waren.

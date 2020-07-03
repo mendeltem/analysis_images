@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Oct 28 16:16:59 2019
+
+@author: mendel
+"""
+
+import pandas as pd
+import numpy as np
+import os
+
+import re
+import pandas as pd
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import MinMaxScaler
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+def get_file_paths(start_dir, extensions = ['file']):
+    """Returns all image paths with the given extensions in the directory.
+
+    Arguments:
+        start_dir: directory the search starts from.
+
+        extensions: extensions of image file to be recognized.
+
+    Returns:
+        a sorted list of all image paths starting from the root of the file
+        system.
+    """
+    
+    if start_dir is None:
+        start_dir = os.getcwd()
+    img_paths = []
+    for roots,dirs,files in os.walk(start_dir):
+        for name in files:
+          if '.' == name[0]:
+            name = name[1:]
+          if '_' == name[0]:
+            name = name[1:]
+          for e in extensions:
+              if name.endswith('.' + e):
+
+                    img_paths.append(roots + '/' + name)
+    img_paths.sort()
+    return img_paths
+  
+  
+data_1_dir_h5 = '/mnt/data/DATA/dataset/FEATURES/saved/exception_memory_mean.file'
+
+pandas_data_df = pd.read_feather(data_1_dir_h5)
+
+
+pandas_data_df.fillna(pandas_data_df.mean(), inplace=True)
+
+
+pandas_data_df.loc[:,"per_lp"]
+
+
+X = pandas_data_df.values[:,4:]
+y = pandas_data_df.iloc[:,1]
+
+print(pandas_data_df.isna().sum())
+
+
+pandas_data_df.columns[1]
+
+pandas_data_df.columns[0]
+
+
+
+
+
+#labelEncoder = LabelEncoder()
+
+
+
+#labelEncoder.fit(pandas_data_df[pandas_data_df.columns[4]])
+
+
+#pandas_data_df[pandas_data_df.columns[4]] = labelEncoder.transform(pandas_data_df[pandas_data_df.columns[4]])
+
+
+
+
+kmeans = KMeans(n_clusters=2) 
+kmeans.fit(X)
+
+
+
+correct = 0
+for i in range(1):
+    predict_me = np.array(X[i].astype(float))
+    predict_me = predict_me.reshape(-1, len(predict_me))
+    prediction = kmeans.predict(predict_me)
+    if prediction[0] == y[i]:
+        correct += 1
+
+print(correct/len(X))
+

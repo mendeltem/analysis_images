@@ -1,0 +1,85 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 26 15:17:26 2018
+
+@author: DD, UT
+
+
+inception_v3 net.
+"""
+
+import sys
+import pickle
+import keras
+import os
+import gc
+#import exp_library as ex
+import pandas as pd
+import numpy as np
+import re
+from time import time
+import keras
+
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
+
+
+from keras.applications.inception_v3 import preprocess_input
+from modules.generators import ImageSequence
+
+DEFAULT_SAVE_PATH_MODEL     = 'model_inception_v3_mixedlayeroutputs_auto.h5'
+DEFAULT_IMAGE_DIRECTORY     = 'mem_images/'
+DEFAULT_SAVE_DATA_PATH      = 'activations_of_fixations_auto.p' #TODO: think about a good name maybe
+DEFAULT_EYE_FIXATION_DAT    = "finalresulttab_funcsac_SFC_memory.dat"
+DEFAULT_EXPERIMENT          = "memory"
+
+
+all_data = pd.read_table(DEFAULT_EYE_FIXATION_DAT,encoding = "ISO-8859-1")
+
+
+
+SAVE_PATH_MODEL = ''
+IMAGE_DIRECTORY = ''
+SAVE_DATA_PATH = ''
+
+
+def get_model(load_path = None, auto_save = True):
+    """Loads or instantiates a model based on inception_v3 returning the
+    outputs of all 11 mixed layers with indices from 0 to 10.
+
+    Arguments:
+        load_path: path of the already instantiated saved model.
+
+        auto_save: if True, saves the model in the default save path, if model
+        was not loaded.
+
+    Returns:
+        a keras model with all full mixed layers of inception_V3 as output
+    """
+    inc_v3 = keras.applications.InceptionV3(include_top=False,
+                                            weights='imagenet')
+
+    def get_mixed_layer_names():
+        layer_names = []
+        for layer in inc_v3.layers:
+            if 'mixed' in layer.name:
+                layer_names.append(layer.name)
+        return layer_names
+
+    mixed_layer_names = get_mixed_layer_names()
+
+    main_mixed_layer_names = [ln for ln in mixed_layer_names if '_' not in ln]
+
+    x = inc_v3.input
+    outs = []
+    for ln in main_mixed_layer_names:
+        outs.append(inc_v3.get_layer(ln).output)
+    model = keras.Model(inputs=x, outputs=outs)
+    if auto_save:
+        model.save(DEFAULT_SAVE_PATH_MODEL, include_optimizer=False)
+    return model
+  
+  
+  
+model = get_model()

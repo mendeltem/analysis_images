@@ -1,0 +1,244 @@
+{
+     "memory_color_control":        
+      {
+            "image_type"      : "memory_color", 
+            "experiment_type" : "control",
+            "search_type"     : ""   
+      },
+      "memory_color_peripher_lowpassfilter":
+      {
+            "image_type"      : "memory_color", 
+            "experiment_type" : "peripher_lowpassfilter",
+            "search_type"     : ""   
+      },
+      "memory_color_peripher_peripher_highpassfilter":
+      {
+            "image_type"      : "memory_color", 
+            "experiment_type" : "peripher_highpassfilter",
+            "search_type"     : ""   
+      },
+      "memory_color_zentral_lowpassfilter":
+      {
+            "image_type"      : "memory_color", 
+            "experiment_type" : "zentral_lowpassfilter",
+            "search_type"     : ""   
+      },
+      "memory_color_zentral_highpassfilter":
+      {
+            "image_type"      : "memory_color", 
+            "experiment_type" : "zentral_highpassfilter",
+            "search_type"     : ""   
+      },
+     "memory_grayscale_control":        
+      {
+            "image_type"      : "memory_grayscale", 
+            "experiment_type" : "control",
+            "search_type"     : ""   
+      },
+      "memory_grayscale_peripher_lowpassfilter":
+      {
+            "image_type"      : "memory_grayscale", 
+            "experiment_type" : "peripher_lowpassfilter",
+            "search_type"     : ""   
+      },
+      "memory_grayscale_peripher_peripher_highpassfilter":
+      {
+            "image_type"      : "memory_grayscale", 
+            "experiment_type" : "peripher_highpassfilter",
+            "search_type"     : ""   
+      },
+      "memory_grayscale_zentral_lowpassfilter":
+      {
+            "image_type"      : "memory_grayscale", 
+            "experiment_type" : "zentral_lowpassfilter",
+            "search_type"     : ""   
+      },
+      "memory_grayscale_zentral_highpassfilter":
+      {
+            "image_type"      : "memory_grayscale", 
+            "experiment_type" : "zentral_highpassfilter",
+            "search_type"     : ""   
+      },     
+    
+    "search_color_control_target_not_present": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "control",
+            "search_type"     : "target_not_present"    
+     },     
+    "search_color_control_expectedlocation": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "control",
+            "search_type"     : "expectedlocation"    
+     },     
+    "search_color_control_randomlocation": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "control",
+            "search_type"     : "randomlocation"    
+     },     
+    "search_color_peripher_lowpassfilter_target_not_present": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "peripher_lowpassfilter",
+            "search_type"     : "target_not_present"    
+     },     
+    "search_color_peripher_lowpassfilter_expectedlocation": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "peripher_lowpassfilter",
+            "search_type"     : "expectedlocation"    
+     },     
+    "search_color_peripher_lowpassfilter_randomlocation": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "peripher_lowpassfilter",
+            "search_type"     : "randomlocation"    
+     },   
+    "search_color_peripher_highpassfilter_target_not_present": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "peripher_highpassfilter",
+            "search_type"     : "target_not_present"    
+     },     
+    "search_color_peripher_highpassfilter_expectedlocation": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "peripher_highpassfilter",
+            "search_type"     : "expectedlocation"    
+     },     
+    "search_color_peripher_highpassfilter_randomlocation": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "peripher_highpassfilter",
+            "search_type"     : "randomlocation"    
+     }, 
+    "search_color_zentral_lowpassfilter_target_not_present": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "zentral_lowpassfilter",
+            "search_type"     : "target_not_present"    
+     },     
+    "search_color_zentral_lowpassfilter_expectedlocation": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "zentral_lowpassfilter",
+            "search_type"     : "expectedlocation"    
+     },     
+    "search_color_zentral_lowpassfilter_randomlocation": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "zentral_lowpassfilter",
+            "search_type"     : "randomlocation"    
+     }, 
+    "search_color_zentral_highpassfilter_target_not_present": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "zentral_highpassfilter",
+            "search_type"     : "target_not_present"    
+     },     
+    "search_color_zentral_highpassfilter_expectedlocation": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "zentral_highpassfilter",
+            "search_type"     : "expectedlocation"    
+     },     
+    "search_color_zentral_highpassfilter_randomlocation": 
+     {
+            "image_type"      : "search_color",
+            "experiment_type" : "zentral_highpassfilter",
+            "search_type"     : "randomlocation"    
+     }, 
+    "search_grayscale_control_target_not_present": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "control",
+            "search_type"     : "target_not_present"    
+     },     
+    "search_grayscale_control_expectedlocation": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "control",
+            "search_type"     : "expectedlocation"    
+     },     
+    "search_grayscale_control_randomlocation": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "control",
+            "search_type"     : "randomlocation"    
+     },     
+    "search_grayscale_peripher_lowpassfilter_target_not_present": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "peripher_lowpassfilter",
+            "search_type"     : "target_not_present"    
+     },     
+    "search_grayscale_peripher_lowpassfilter_expectedlocation": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "peripher_lowpassfilter",
+            "search_type"     : "expectedlocation"    
+     },     
+    "search_grayscale_peripher_lowpassfilter_randomlocation": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "peripher_lowpassfilter",
+            "search_type"     : "randomlocation"    
+     },   
+    "search_grayscale_peripher_highpassfilter_target_not_present": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "peripher_highpassfilter",
+            "search_type"     : "target_not_present"    
+     },     
+    "search_grayscale_peripher_highpassfilter_expectedlocation": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "peripher_highpassfilter",
+            "search_type"     : "expectedlocation"    
+     },     
+    "search_grayscale_peripher_highpassfilter_randomlocation": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "peripher_highpassfilter",
+            "search_type"     : "randomlocation"    
+     }, 
+    "search_grayscale_zentral_lowpassfilter_target_not_present": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "zentral_lowpassfilter",
+            "search_type"     : "target_not_present"    
+     },     
+    "search_grayscale_zentral_lowpassfilter_expectedlocation": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "zentral_lowpassfilter",
+            "search_type"     : "expectedlocation"    
+     },     
+    "search_grayscale_zentral_lowpassfilter_randomlocation": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "zentral_lowpassfilter",
+            "search_type"     : "randomlocation"    
+     }, 
+    "search_grayscale_zentral_highpassfilter_target_not_present": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "zentral_highpassfilter",
+            "search_type"     : "target_not_present"    
+     },     
+    "search_grayscale_zentral_highpassfilter_expectedlocation": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "zentral_highpassfilter",
+            "search_type"     : "expectedlocation"    
+     },     
+    "search_grayscale_zentral_highpassfilter_randomlocation": 
+     {
+            "image_type"      : "search_grayscale",
+            "experiment_type" : "zentral_highpassfilter",
+            "search_type"     : "randomlocation"    
+     }
+      
+}        

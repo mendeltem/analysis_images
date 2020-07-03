@@ -1,0 +1,421 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct 26 15:17:26 2018
+
+@author: DD, UT
+
+compute and save intermediate representations of fixations on images from the
+inception_v3 net.
+"""
+
+import sys
+import pickle
+import keras
+import os
+import gc
+#import exp_library as ex
+import pandas as pd
+import numpy as np
+import re
+from time import time
+
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
+os.environ["CUDA_VISIBLE_DEVICES"]="1"
+
+
+from keras.applications.inception_v3 import preprocess_input
+from modules.generators import ImageSequence
+
+DEFAULT_SAVE_PATH_MODEL     = 'model_inception_v3_mixedlayeroutputs_auto.h5'
+DEFAULT_IMAGE_DIRECTORY     = 'mem_images/'
+DEFAULT_SAVE_DATA_PATH      = 'activations_of_fixations_auto.p' #TODO: think about a good name maybe
+DEFAULT_EYE_FIXATION_DAT    = "finalresulttab_funcsac_SFC_memory.dat"
+DEFAULT_EXPERIMENT          = "memory"
+
+
+all_data = pd.read_table(DEFAULT_EYE_FIXATION_DAT,encoding = "ISO-8859-1")
+
+
+
+SAVE_PATH_MODEL = ''
+IMAGE_DIRECTORY = ''
+SAVE_DATA_PATH = ''
+
+#set the fovea size
+fovea= 30
+#filter: get only the fixation part inside the maximum fovea possible
+all_data = all_data.loc[
+                      (all_data["fixposx"] >= fovea) &
+                      (all_data["fixposx"] <= 1024 - fovea) &
+                      (all_data["fixposy"] >= fovea) &
+                      (all_data["fixposy"] <= 768 - fovea)
+                      ]
+
+
+from numbers import Number
+from collections import Set, Mapping, deque
+
+try: # Python 2
+    zero_depth_bases = (basestring, Number, xrange, bytearray)
+    iteritems = 'iteritems'
+except NameError: # Python 3
+    zero_depth_bases = (str, bytes, Number, range, bytearray)
+    iteritems = 'items'
+
+def getsize(obj_0):
+    """Recursively iterate to sum size of object & members."""
+    _seen_ids = set()
+    def inner(obj):
+        obj_id = id(obj)
+        if obj_id in _seen_ids:
+            return 0
+        _seen_ids.add(obj_id)
+        size = sys.getsizeof(obj)
+        if isinstance(obj, zero_depth_bases):
+            pass # bypass remaining control flow and return
+        elif isinstance(obj, (tuple, list, Set, deque)):
+            size += sum(inner(i) for i in obj)
+        elif isinstance(obj, Mapping) or hasattr(obj, iteritems):
+            size += sum(inner(k) + inner(v) for k, v in getattr(obj, iteritems)())
+        # Check for custom object instances - may subclass above too
+        if hasattr(obj, '__dict__'):
+            size += inner(vars(obj))
+        if hasattr(obj, '__slots__'): # can have __slots__ with __dict__
+            size += sum(inner(getattr(obj, s)) for s in obj.__slots__ if hasattr(obj, s))
+        return size
+    return inner(obj_0)
+
+def get_model(load_path = None, auto_save = True):
+    """Loads or instantiates a model based on inception_v3 returning the
+    outputs of all 11 mixed layers with indices from 0 to 10.
+
+    Arguments:
+        load_path: path of the already instantiated saved model.
+
+        auto_save: if True, saves the model in the default save path, if model
+        was not loaded.
+
+    Returns:
+        a keras model with all full mixed layers of inception_V3 as output
+    """
+
+    if load_path is None:
+        if SAVE_PATH_MODEL == '':
+            load_path = DEFAULT_SAVE_PATH_MODEL
+        else:
+            load_path = SAVE_PATH_MODEL
+    try:
+        model = keras.models.load_model(load_path)
+
+    except OSError:
+        inc_v3 = keras.applications.InceptionV3(include_top=False,
+                                                weights='imagenet')
+
+        def get_mixed_layer_names():
+            layer_names = []
+            for layer in inc_v3.layers:
+                if 'mixed' in layer.name:
+                    layer_names.append(layer.name)
+            return layer_names
+
+        mixed_layer_names = get_mixed_layer_names()
+
+        main_mixed_layer_names = [ln for ln in mixed_layer_names if '_' not in ln]
+
+        x = inc_v3.input
+        outs = []
+        for ln in main_mixed_layer_names:
+            outs.append(inc_v3.get_layer(ln).output)
+        model = keras.Model(inputs=x, outputs=outs)
+        if auto_save:
+            model.save(DEFAULT_SAVE_PATH_MODEL, include_optimizer=False)
+    return model
+
+def get_img_paths(start_dir, extensions = ['png']):
+    """Returns all image paths with the given extensions in the directory.
+
+    Arguments:
+        start_dir: directory the search starts from.
+
+        extensions: extensions of image file to be recognized.
+
+    Returns:
+        a sorted list of all image paths starting from the root of the file
+        system.
+    """
+    if start_dir is None:
+        start_dir = os.getcwd()
+    img_paths = []
+    for roots,dirs,files in os.walk(start_dir):
+        for name in files:
+            for e in extensions:
+                if name.endswith('.' + e):
+                    img_paths.append(roots + '/' + name)
+    img_paths.sort()
+    return img_paths
+
+def write(data, file_path):
+    """Writes data (using pickle) to a file in smaller byte chunks.
+
+    Arguments:
+        data: the data to be pickled
+
+        file_path: the file to be written to (or created)
+    """
+    max_bytes = 2**10 - 1
+    bytes_out = pickle.dumps(data, protocol=4)
+    
+    
+    #pickle.dump(d, open("file", 'w'), protocol=4)
+
+    with open(file_path, 'wb') as f_out:
+        for idx in range(0, len(bytes_out), max_bytes):
+            f_out.write(bytes_out[idx:idx+max_bytes])
+
+model = get_model()
+
+if IMAGE_DIRECTORY == '':
+    img_paths = get_img_paths(DEFAULT_IMAGE_DIRECTORY)
+else:
+    img_paths = get_img_paths(IMAGE_DIRECTORY)
+
+img_sequ = ImageSequence(paths = img_paths,
+                         labels = None,
+                         batch_size = 1,
+                         preprocessing=preprocess_input,
+                         augmentation=[])
+   
+                                          
+Result_df = pd.DataFrame()         
+Output_df = pd.DataFrame()
+Dummy_df = pd.DataFrame()
+
+
+color_original = []
+color_highpass = []
+color_lowpass  = []
+
+grey_original  = []
+grey_highpass  = []
+grey_lowpass   = []
+
+save  = 0
+
+#save the features from each pictures seperately
+for i,image in enumerate(img_sequ): 
+#    if i >= 200:break
+    #i = 0
+    print("i "+str(i))
+    p = model.predict(image, batch_size = 1)
+    
+    
+    if "color" in img_paths[i]:
+        print("color")
+        if "original" in img_paths[i]:
+            print("original")
+            color_original.append(p)
+            #save and delete the features
+            if save != 1:
+                if save == 1:
+                    write( color_original ,'saved/color_original.pickle')
+                    color_original = []
+                if save == 2:
+                    write( color_highpass ,'saved/color_highpass.pickle')
+                    color_highpass = []
+                if save == 3:
+                    write( color_lowpass ,'saved/color_lowpass.pickle')
+                    color_lowpass = []
+                if save == 4:
+                    write( grey_original ,'saved/grey_original.pickle')
+                    grey_original = []          
+                if save == 5:
+                    write( grey_highpass ,'saved/grey_highpass.pickle')
+                    grey_highpass = []
+                if save == 6:
+                    write( grey_lowpass ,'saved/grey_lowpass.pickle')
+                    grey_lowpass = [] 
+            save = 1
+        elif "high-pass" in img_paths[i]: 
+            print("high-pass")
+            color_highpass.append(p)
+                        #save and delete the features
+            if save != 2:
+                if save == 1:
+                    write( color_original ,'saved/color_original.pickle')
+                    color_original = []
+                if save == 2:
+                    write( color_highpass ,'saved/color_highpass.pickle')
+                    color_highpass = []
+                if save == 3:
+                    write( color_lowpass ,'saved/color_lowpass.pickle')
+                    color_lowpass = []
+                if save == 4:
+                    write( grey_original ,'saved/grey_original.pickle')
+                    grey_original = []          
+                if save == 5:
+                    write( grey_highpass ,'saved/grey_highpass.pickle')
+                    grey_highpass = []
+                if save == 6:
+                    write( grey_lowpass ,'saved/grey_lowpass.pickle')
+                    grey_lowpass = [] 
+            save = 2
+        elif "low-pass" in img_paths[i]: 
+            print("low-pass")
+            color_lowpass.append(p)
+                        #save and delete the features
+            if save != 3:
+                if save == 1:
+                    write( color_original ,'saved/color_original.pickle')
+                    color_original = []
+                if save == 2:
+                    write( color_highpass ,'saved/color_highpass.pickle')
+                    color_highpass = []
+                if save == 3:
+                    write( color_lowpass ,'saved/color_lowpass.pickle')
+                    color_lowpass = []
+                if save == 4:
+                    write( grey_original ,'saved/grey_original.pickle')
+                    grey_original = []          
+                if save == 5:
+                    write( grey_highpass ,'saved/grey_highpass.pickle')
+                    grey_highpass = []
+                if save == 6:
+                    write( grey_lowpass ,'saved/grey_lowpass.pickle')
+                    grey_lowpass = [] 
+            save = 3
+    elif "grayscale" in img_paths[i]: 
+        print("greyscale")
+        if "original" in img_paths[i]:
+            print("original")
+            grey_original.append(p)
+                        #save and delete the features
+            if save != 4:
+                if save == 1:
+                    write( color_original ,'saved/color_original.pickle')
+                    color_original = []
+                if save == 2:
+                    write( color_highpass ,'saved/color_highpass.pickle')
+                    color_highpass = []
+                if save == 3:
+                    write( color_lowpass ,'saved/color_lowpass.pickle')
+                    color_lowpass = []
+                if save == 4:
+                    write( grey_original ,'saved/grey_original.pickle')
+                    grey_original = []          
+                if save == 5:
+                    write( grey_highpass ,'saved/grey_highpass.pickle')
+                    grey_highpass = []
+                if save == 6:
+                    write( grey_lowpass ,'saved/grey_lowpass.pickle')
+                    grey_lowpass = [] 
+            save = 4
+        elif "high-pass" in img_paths[i]: 
+            print("high-pass")
+            grey_highpass.append(p) 
+                        #save and delete the features
+            if save != 5:
+                if save == 1:
+                    write( color_original ,'saved/color_original.pickle')
+                    color_original = []
+                if save == 2:
+                    write( color_highpass ,'saved/color_highpass.pickle')
+                    color_highpass = []
+                if save == 3:
+                    write( color_lowpass ,'saved/color_lowpass.pickle')
+                    color_lowpass = []
+                if save == 4:
+                    write( grey_original ,'saved/grey_original.pickle')
+                    grey_original = []          
+                if save == 5:
+                    write( grey_highpass ,'saved/grey_highpass.pickle')
+                    grey_highpass = []
+                if save == 6:
+                    write( grey_lowpass ,'saved/grey_lowpass.pickle')
+                    grey_lowpass = [] 
+            save = 5
+        elif "low-pass" in img_paths[i]: 
+            print("low-pass") 
+            grey_lowpass.append(p)
+                        #save and delete the features
+            if save != 6:
+                if save == 1:
+                    write( color_original ,'saved/color_original.pickle')
+                    color_original = []
+                if save == 2:
+                    write( color_highpass ,'saved/color_highpass.pickle')
+                    color_highpass = []
+                if save == 3:
+                    write( color_lowpass ,'saved/color_lowpass.pickle')
+                    color_lowpass = []
+                if save == 4:
+                    write( grey_original ,'saved/grey_original.pickle')
+                    grey_original = []          
+                if save == 5:
+                    write( grey_highpass ,'saved/grey_highpass.pickle')
+                    grey_highpass = []
+                if save == 6:
+                    write( grey_lowpass ,'saved/grey_lowpass.pickle')
+                    grey_lowpass = [] 
+            save = 6
+            
+    #save the last iteration features
+    if (i+1) >= len(img_sequ):
+        if save == 1:
+            write( color_original ,'saved/color_original.pickle')
+            color_original = []
+        if save == 2:
+            write( color_highpass ,'saved/color_highpass.pickle')
+            color_highpass = []
+        if save == 3:
+            write( color_lowpass ,'saved/color_lowpass.pickle')
+            color_lowpass = []
+        if save == 4:
+            write( grey_original ,'saved/grey_original.pickle')
+            grey_original = []          
+        if save == 5:
+            write( grey_highpass ,'saved/grey_highpass.pickle')
+            grey_highpass = []
+        if save == 6:
+            write( grey_lowpass ,'saved/grey_lowpass.pickle')
+            grey_lowpass = [] 
+           
+    
+
+ 
+    print("Size of color_original", round(getsize(color_original) * 0.000000954) , "MB")
+    print("Size of color_highpass", round(getsize(color_highpass) * 0.000000954) , "MB")
+    print("Size of color_lowpass", round(getsize(color_lowpass) * 0.000000954) , "MB")
+    print("Size of grey_original", round(getsize(grey_original) * 0.000000954) , "MB")
+    print("Size of grey_highpass", round(getsize(grey_highpass) * 0.000000954) , "MB")
+    print("Size of grey_lowpass", round(getsize(grey_lowpass) * 0.000000954) , "MB")
+
+
+
+#with open('color_original.pickle', 'wb') as handle:
+#    pickle.dump(color_original, handle, protocol=pickle.HIGHEST_PROTOCOL)
+#    
+#    
+#from objsize import get_deep_size
+#sys.getsizeof(color_highpass_loaded)
+#
+#
+#
+#getsize(color_highpass_loaded)
+#    
+#with open('color_highpass.pickle', 'rb') as handle:
+#    color_highpass_loaded = pickle.load(handle)
+#    
+#   
+#print("Size of color_highpass_loaded", sys.getsizeof(color_highpass_loaded), "")    
+#type(D[0])
+#print("len " , len(D))
+#
+#
+#print(len(D[0][0][0][0]))
+#    
+#type(D[1][1])   
+#    
+    
+    
+

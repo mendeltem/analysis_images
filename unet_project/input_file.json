@@ -1,0 +1,12 @@
+{
+     
+    "MEMORY"           : "../blickdaten/finalresulttab_funcsac_SFC_memory.dat", 
+    "SEARCH"           : "../blickdaten/finalresulttab_funcsac_SFC_search.dat",
+
+    "MEMORY_COLOR"     : "../images/color/session1_memory/original",
+    "MEMORY_GRAYSCALE" : "../images/grayscale/session1_memory/original",
+    "SEARCH_COLOR"     : "../images/color/session2_search/original",
+    "SEARCH_GRAYSCALE" : "../images/grayscale/session2_search/original", 
+    
+    "output_path"      : "../dataset/"
+}        
