@@ -1,7 +1,6 @@
 # analysis_images
 
-The gitlab repository for the Mashin Learning Eye Movement
-
+The gitlab repository for the Mashine Learning in image analysis. 
 
 * Clone repository
 * feature_analyse_project:
