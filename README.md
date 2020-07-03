@@ -17,7 +17,7 @@ The gitlab repository for the Mashin Learning Eye Movement
 	<img  height="400px" width="400px" alt="Server Icon" src="images/bce_dice_loss.jpg" />
 	
 	
-Left: Input  Middle: Label  Right: Outpu
+Left: Input  Middle: Label  Right: Output
 	
 * Train:
 	
