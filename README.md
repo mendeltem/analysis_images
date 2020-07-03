@@ -12,3 +12,13 @@ The gitlab repository for the Mashin Learning Eye Movement
  
 * unet_project:
     * `generating Eye movement with kernel Density Estimation.`
+	
+	* Loss:
+	<img align="left" height="94px" width="94px" alt="Server Icon" src="images/bce_dice_loss.jpg" />
+	
+	* Train:
+	
+	<img align="left" height="94px" width="94px" alt="Server Icon" src="images/train_out.jpg" />
+	
+	
+	
