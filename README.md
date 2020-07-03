@@ -6,7 +6,7 @@ The gitlab repository for the Mashin Learning Eye Movement
 * Clone repository
 * feature_analyse_project:
     * `we analyse the part of the feature activation from CNN`
-
+	* `Question is are there any correlation between experiment type and feature activation?`
 * pca_project:
     * `search for correlation of the 10000 features in CNN`
  
