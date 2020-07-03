@@ -4,6 +4,11 @@
 Created on Mon Oct 28 16:16:59 2019
 
 @author: mendel
+
+
+collect the created features and transform them into feader.files 
+and build directory structure
+
 """
 
 import pandas as pd
@@ -103,17 +108,12 @@ def type_of_image(path, save_dir="", model_type=""):
     else:
       raise NameError("At filter!")
     
-    
-  #print("exp_type " , experiment_type)  
-  
-  #save_dir_temp = save_dir +"/"+model_type
   
   if model_type =="":
     save_dir_temp = save_dir +"/"  + experiment_type
   else:  
     save_dir_temp = save_dir +"/"+model_type +"/"  + experiment_type
   
-  #print("pic_name:", picture_name)
  
   
   if experiment_type == "search":
@@ -143,12 +143,7 @@ def type_of_image(path, save_dir="", model_type=""):
     save_dir_temp = save_dir_temp + "/grayscale"
   else:
     raise NameError("Color Type!")
-    
-  #print("expectedlocation: ", expectedlocation)
-  #print("targetpresent: ", targetpresent)
-  
-  #print("color: ", color)   
-  #print("save_dir_temp: ", save_dir_temp)    
+      
   
   return color,filter_type,filtered, experiment_type, expectedlocation, \
           targetpresent, save_dir_temp, pic_id, match
@@ -161,16 +156,6 @@ data_1_dir_h5 = '/mnt/data/DATA/dataset/FEATURES/saved_2/' + model_type
 
 paths = get_file_paths(data_1_dir_h5) 
 
-#
-#for j, selected_path in enumerate(paths):
-#    
-#  print(str(j)+" "+selected_path)
-#  
-#  color,filter_type,filtered, experiment_type, \
-#  expectedlocation, targetpresent, \
-#  save_dir_temp, pic_id, match = type_of_image(selected_path,save_dir="",
-#                                               model_type=model_type)
-#  
   
 All_df = pd.DataFrame()
 
@@ -199,11 +184,9 @@ for j, selected_path in enumerate(paths):
   
   for i,col in enumerate(cols):
     if  [z for z in lis if z == col] :
-      #print("Index: ", i)
       indezes.append(i)
       if type(cols[i-1]) == int:
         c = cols[i-1] + 1
-        #print(c)
         
   m_df = pandas_data_df.groupby('subject').mean()
   

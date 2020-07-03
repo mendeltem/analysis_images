@@ -352,22 +352,12 @@ def get_feature(p, fovea, image, selected_data):
   
     #um die die Daten zu konkatinieren muss die Index geresetet werden
     selected_data = selected_data.reset_index()
-    #list_of_activations_SR = list_of_activations_SR.reset_index()
-    
-    #list_of_activations_SR = list_of_activations_SR
-    
-    #ausgabe vom Form
-    #debug  
-    #print("list shape ",list_of_activations_SR.shape)
-    #Die Experimentdaten und Aktivierungsdaten aus dem Feature werden
-    #konkatiniert
+
   
     Result_df = pd.concat([selected_data, list_of_activations_SR], 
                               axis=1,
                               ignore_index=False)  
     
-    
-    #feather.write_dataframe(Result_df, save_dir)
     
     return Result_df
               
@@ -582,12 +572,7 @@ def type_of_image(path, save_dir="", model_type=""):
   elif "grayscale" in path: 
     color = 0
     save_dir_temp = save_dir_temp + "/grayscale"
-    
-  #print("expectedlocation: ", expectedlocation)
-  #print("targetpresent: ", targetpresent)
-  
-  #print("color: ", color)   
-  #print("save_dir_temp: ", save_dir_temp)    
+       
   
   return color,filter_type,\
          expectedlocation, targetpresent, save_dir_temp, pic_id, match
@@ -623,27 +608,13 @@ for i,image in enumerate(img_sequ):
     save_dir_temp, pic_id, match = type_of_image(img_paths[i],
                                           SAVE_DIR ,
                                           model_type)
-    
-    
-    #print("filter_type", filter_type)
-    
-    #print("expectedlocation", pic_id)
-    
-    #print("pic_id", pic_id)
-    
 
-    
-    #print("Loop :"+str(i))
-    #if i >= len(img_sequ):break
     
     #predicted the features
     p = model.predict(image, batch_size = 1)
            
     if "original" == filter_type:
       
-        #print("original")
-        #colorimages: 1 
-        #masktype == 0 & maskregion == 0: Kontrollbedingung
         #Kontrollbedingung ohne Farben
         selected_data = sel_experiment_data(all_data, 
                                             pic_id, 
